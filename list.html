@@ -11,8 +11,12 @@
 <body>
     <div class="app">
         <h1>Add Pizza</h1>
-        <input type="text" placeholder="Enter Pizza" v-model="pizzaData.name"> <br> <br>
-        <input type="number" placeholder="Enter Price" v-model="pizzaData.price"> <br> <br>
+        <input type="text" placeholder="Enter Pizza" v-model="pizzaData.name"> <br>
+        <small style="color: red;" v-if="validation.nameStatus">Pizza name is required</small> <br> <br>
+
+        <input type="number" placeholder="Enter Price" v-model="pizzaData.price"> <br>
+        <small style="color: red;" v-if="validation.priceStatus">Pizza price is required</small> <br> <br>
+
         <button @click="create()">Add Pizza</button>
 
         <hr>
@@ -46,18 +50,38 @@
                 name: '',
                 price: ''
             },
-            items: []
+            items: [],
+            validation: {
+                nameStatus: false,
+                priceStatus: false
+            }
         },
         methods: {
             create() {
-                this.items.push({
-                    id: this.items.length + 1,
-                    name: this.pizzaData.name,
-                    price: this.pizzaData.price
-                })
 
+                this.checkValidation();
+
+                if (!this.validation.nameStatus && !this.validation.priceStatus) {
+                    this.items.push({
+                        id: this.items.length + 1,
+                        name: this.pizzaData.name,
+                        price: this.pizzaData.price
+                    })
+                    this.clear();
+                }
+
+            },
+
+            clear() {
                 this.pizzaData.name = '';
                 this.pizzaData.price = '';
+            },
+
+            checkValidation() {
+
+                this.validation.nameStatus = this.pizzaData.name == '' ? true : false;
+                this.validation.priceStatus = this.pizzaData.price == '' ? true : false;
+
             }
         }
     })
